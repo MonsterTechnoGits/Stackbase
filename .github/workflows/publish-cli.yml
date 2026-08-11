@@ -27,7 +27,7 @@ jobs:
           version: 8
 
       - name: Update npm
-        run: npm install -g npm@latest
+        run: npm install -g npm@11.5.2
 
       - name: Install dependencies
         run: pnpm install --frozen-lockfile
