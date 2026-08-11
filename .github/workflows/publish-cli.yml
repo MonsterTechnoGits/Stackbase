@@ -26,6 +26,9 @@ jobs:
         with:
           version: 8
 
+      - name: Update npm
+        run: npm install -g npm@latest
+
       - name: Install dependencies
         run: pnpm install --frozen-lockfile
 
@@ -45,5 +48,3 @@ jobs:
       - name: Publish
         working-directory: create-boilerplate
         run: npm publish --access public --provenance
-        env:
-          NODE_AUTH_TOKEN: ${{ secrets.NPM_TOKEN }}
