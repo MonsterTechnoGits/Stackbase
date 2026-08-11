@@ -3,6 +3,7 @@
   "version": "1.0.0",
   "description": "Stackbase — Fastify 5 backend + Next.js 16 / React 19 frontend fullstack boilerplate",
   "private": true,
+  "packageManager": "pnpm@11.8.0",
   "scripts": {
     "prepare": "husky",
     "setup": "node setup.js",
@@ -27,7 +28,7 @@
   },
   "engines": {
     "node": ">=20.0.0",
-    "pnpm": ">=8.0.0"
+    "pnpm": ">=9.0.0"
   },
   "keywords": [
     "boilerplate",
