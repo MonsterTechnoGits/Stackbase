@@ -24,10 +24,24 @@ export interface ScaffoldResult {
   copiedPaths: string[];
 }
 
-/** Resolve the boilerplate repo root — parent of this package (../ from create-boilerplate/). */
+/**
+ * Resolve the template source root — the directory containing `backend/` and `frontend/`.
+ *
+ * Published package: `vendor/` is bundled inside create-boilerplate/ itself (see
+ * scripts/copy-vendor.js, run at prebuild), so `dist/scaffold.js -> ../vendor` resolves there.
+ * Local monorepo dev: no `vendor/` exists yet, so this falls back to the monorepo root
+ * (`dist/scaffold.js -> ../..` / `src/scaffold.ts -> ../..`), where backend/frontend live as
+ * siblings of create-boilerplate/.
+ */
 function resolveRepoRoot(): string {
-  // dist/scaffold.js -> ../.. ; src/scaffold.ts (ts-node/tsx) -> ../..
+  const vendorDir = join(__dirname, '..', 'vendor');
+  if (existsSync(vendorDir)) return vendorDir;
   return join(__dirname, '..', '..');
+}
+
+/** templates/prisma/ ships inside create-boilerplate/ itself — resolve relative to this package, not repoRoot. */
+function resolvePrismaTemplateDir(): string {
+  return join(__dirname, '..', 'templates', 'prisma');
 }
 
 function activeFlags(answers: WizardAnswers): Record<string, boolean> {
@@ -269,8 +283,8 @@ function applyRolesRewrite(targetDir: string, answers: WizardAnswers): void {
  * create-boilerplate/templates/prisma/ into the same backend/src/DatabaseModule location, and
  * swaps BetterAuthConfig.ts's Drizzle adapter for Prisma's via content rewrite.
  */
-function copyPrismaDatabase(repoRoot: string, targetDir: string): void {
-  const templateDir = join(repoRoot, 'create-boilerplate', 'templates', 'prisma');
+function copyPrismaDatabase(targetDir: string): void {
+  const templateDir = resolvePrismaTemplateDir();
   const destDbModule = join(targetDir, 'backend', 'src', 'DatabaseModule');
   const destPrismaDir = join(targetDir, 'backend', 'prisma');
 
@@ -300,8 +314,8 @@ function copyPrismaDatabase(repoRoot: string, targetDir: string): void {
   }
 }
 
-function mergePrismaPackageJson(repoRoot: string, targetDir: string): void {
-  const templateDir = join(repoRoot, 'create-boilerplate', 'templates', 'prisma');
+function mergePrismaPackageJson(targetDir: string): void {
+  const templateDir = resolvePrismaTemplateDir();
   const partialPath = join(templateDir, 'package.json.partial.json');
   const backendPkgPath = join(targetDir, 'backend', 'package.json');
   if (!existsSync(partialPath) || !existsSync(backendPkgPath)) return;
@@ -441,8 +455,8 @@ export function scaffold(answers: WizardAnswers, targetDirOverride?: string): Sc
   }
 
   if (answers.includeBackend && answers.database && answers.databaseOrm === 'prisma') {
-    copyPrismaDatabase(repoRoot, targetDir);
-    mergePrismaPackageJson(repoRoot, targetDir);
+    copyPrismaDatabase(targetDir);
+    mergePrismaPackageJson(targetDir);
     copiedPaths.push('backend/prisma', 'backend/src/DatabaseModule (prisma)');
   }
 

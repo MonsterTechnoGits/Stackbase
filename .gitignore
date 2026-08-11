@@ -12,6 +12,7 @@ node_modules/
 dist/
 build/
 out/
+create-boilerplate/vendor/
 /deploy/
 
 # Next.js

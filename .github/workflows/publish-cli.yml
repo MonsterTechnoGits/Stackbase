@@ -1,0 +1,49 @@
+name: Publish create-stackbase to npm
+
+on:
+  push:
+    tags:
+      - 'v*.*.*'
+
+jobs:
+  publish:
+    runs-on: ubuntu-latest
+    permissions:
+      contents: read
+      id-token: write
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+
+      - name: Setup Node
+        uses: actions/setup-node@v4
+        with:
+          node-version: '20'
+          registry-url: 'https://registry.npmjs.org'
+
+      - name: Setup pnpm
+        uses: pnpm/action-setup@v4
+        with:
+          version: 8
+
+      - name: Install dependencies
+        run: pnpm install --frozen-lockfile
+
+      - name: Verify tag matches package.json version
+        working-directory: create-boilerplate
+        run: |
+          PKG_VERSION="v$(node -p "require('./package.json').version")"
+          TAG_VERSION="${GITHUB_REF#refs/tags/}"
+          if [ "$PKG_VERSION" != "$TAG_VERSION" ]; then
+            echo "Tag ($TAG_VERSION) does not match package.json version ($PKG_VERSION)"
+            exit 1
+          fi
+
+      - name: Build
+        run: pnpm --filter create-stackbase run build
+
+      - name: Publish
+        working-directory: create-boilerplate
+        run: npm publish --access public --provenance
+        env:
+          NODE_AUTH_TOKEN: ${{ secrets.NPM_TOKEN }}

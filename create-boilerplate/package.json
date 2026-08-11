@@ -1,15 +1,25 @@
 {
   "name": "create-stackbase",
-  "version": "1.0.0",
+  "version": "1.0.1",
   "description": "Interactive CLI scaffolding tool for Stackbase (Fastify 5 + Next.js 16 fullstack boilerplate)",
-  "private": true,
+  "keywords": ["cli", "scaffold", "boilerplate", "fullstack", "fastify", "nextjs", "typescript"],
+  "homepage": "https://stackbase.sumandey.com",
+  "bugs": "https://github.com/MonsterTechnoGits/Stackbase/issues",
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/MonsterTechnoGits/Stackbase.git",
+    "directory": "create-boilerplate"
+  },
+  "license": "ISC",
   "author": "Suman Dey <connect@sumandey.com> (https://sumandey.com)",
   "bin": {
     "create-stackbase": "dist/cli.js"
   },
-  "files": ["dist", "manifest.json"],
+  "files": ["dist", "manifest.json", "vendor", "templates"],
   "scripts": {
     "dev": "tsx src/cli.ts",
+    "vendor": "node scripts/copy-vendor.js",
+    "prebuild": "pnpm run vendor",
     "build": "pnpm run prettier && pnpm run lint:fix && pnpm run lint && tsc --noEmit && tsup",
     "lint": "eslint src --ext .ts",
     "lint:fix": "eslint src --ext .ts --fix",
