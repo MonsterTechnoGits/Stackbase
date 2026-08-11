@@ -1,0 +1,39 @@
+{
+  "name": "create-stackbase",
+  "version": "1.0.0",
+  "description": "Interactive CLI scaffolding tool for Stackbase (Fastify 5 + Next.js 16 fullstack boilerplate)",
+  "private": true,
+  "author": "Suman Dey <connect@sumandey.com> (https://sumandey.com)",
+  "bin": {
+    "create-stackbase": "dist/cli.js"
+  },
+  "files": ["dist", "manifest.json"],
+  "scripts": {
+    "dev": "tsx src/cli.ts",
+    "build": "pnpm run prettier && pnpm run lint:fix && pnpm run lint && tsc --noEmit && tsup",
+    "lint": "eslint src --ext .ts",
+    "lint:fix": "eslint src --ext .ts --fix",
+    "prettier": "prettier --write \"src/**/*.ts\""
+  },
+  "dependencies": {
+    "@clack/prompts": "^0.9.1",
+    "commander": "^13.1.0",
+    "picocolors": "^1.1.1"
+  },
+  "devDependencies": {
+    "@types/node": "^22.0.0",
+    "@typescript-eslint/eslint-plugin": "^7.18.0",
+    "@typescript-eslint/parser": "^7.18.0",
+    "eslint": "^8.57.0",
+    "eslint-config-prettier": "^10.1.8",
+    "eslint-plugin-import": "^2.32.0",
+    "eslint-plugin-prettier": "^5.5.0",
+    "prettier": "^3.8.0",
+    "tsup": "^8.3.5",
+    "tsx": "^4.19.0",
+    "typescript": "^6.0.0"
+  },
+  "engines": {
+    "node": ">=20.0.0"
+  }
+}

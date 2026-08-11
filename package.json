@@ -1,0 +1,44 @@
+{
+  "name": "@stackbase/monorepo",
+  "version": "1.0.0",
+  "description": "Stackbase — Fastify 5 backend + Next.js 16 / React 19 frontend fullstack boilerplate",
+  "private": true,
+  "scripts": {
+    "prepare": "husky",
+    "setup": "node setup.js",
+    "dev": "concurrently --names \"BACKEND,FRONTEND\" --prefix-colors \"blue.bold,magenta.bold\" --kill-others-on-fail \"pnpm dev:backend\" \"pnpm dev:frontend\"",
+    "dev:backend": "pnpm --filter @stackbase/backend run dev",
+    "dev:frontend": "pnpm --filter @stackbase/frontend run dev",
+    "build": "pnpm run lint && pnpm --filter @stackbase/backend run build && node scripts/copy-frontend.js && pnpm --filter @stackbase/frontend run build && node scripts/assemble-deploy.js",
+    "migration:push": "pnpm --filter @stackbase/backend run migration:push",
+    "migration:generate": "pnpm --filter @stackbase/backend run migration:generate",
+    "migration:studio": "pnpm --filter @stackbase/backend run migration:studio",
+    "lint": "pnpm -r run lint",
+    "lint:fix": "pnpm -r run lint:fix",
+    "prettier": "prettier --write \"**/*.{ts,tsx,js,json,md}\" --ignore-path .prettierignore",
+    "generate:openapi": "node backend/scripts/generate-openapi.js",
+    "generate:api": "node backend/scripts/generate-openapi.js && pnpm --filter @stackbase/frontend run generate:api",
+    "pre-checks": "pnpm prettier && pnpm -r run lint:fix && pnpm -r run lint && pnpm build"
+  },
+  "devDependencies": {
+    "concurrently": "^9.2.1",
+    "husky": "^9.1.7",
+    "prettier": "^3.2.5"
+  },
+  "engines": {
+    "node": ">=20.0.0",
+    "pnpm": ">=8.0.0"
+  },
+  "keywords": [
+    "boilerplate",
+    "monorepo",
+    "typescript",
+    "fastify",
+    "nextjs",
+    "drizzle",
+    "better-auth",
+    "react-query"
+  ],
+  "author": "Suman Dey <connect@sumandey.com> (https://sumandey.com)",
+  "license": "ISC"
+}

@@ -1,0 +1,8 @@
+packages:
+  - 'backend'
+  - 'frontend'
+  - 'create-boilerplate'
+allowBuilds:
+  esbuild: true
+  sharp: true
+  unrs-resolver: true

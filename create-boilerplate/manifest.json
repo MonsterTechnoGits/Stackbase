@@ -1,0 +1,90 @@
+{
+  "backend": {
+    "base": ["backend/src/index.ts", "backend/src/app.ts", "backend/src/SharedModule"],
+    "always": [
+      "backend/package.json",
+      "backend/tsconfig.json",
+      "backend/tsup.config.ts",
+      "backend/.prettierrc",
+      "backend/.prettierignore",
+      "backend/.eslintrc.json",
+      "backend/.eslintignore",
+      "backend/.env.example",
+      "backend/AGENTS.md",
+      "backend/CLAUDE.md"
+    ]
+  },
+  "frontend": {
+    "base": [
+      "frontend/src/app",
+      "frontend/src/components",
+      "frontend/src/contexts",
+      "frontend/src/hooks/use-mobile.ts",
+      "frontend/src/hooks/use-nav-breadcrumbs.ts",
+      "frontend/src/hooks/use-haptic.ts",
+      "frontend/src/lib/utils.ts",
+      "frontend/src/lib/haptic.ts",
+      "frontend/src/lib/constants",
+      "frontend/src/api",
+      "frontend/src/services",
+      "frontend/src/proxy.ts",
+      "frontend/src/components/ui/sonner.tsx",
+      "frontend/src/components/motion.tsx"
+    ],
+    "always": [
+      "frontend/package.json",
+      "frontend/tsconfig.json",
+      "frontend/next.config.ts",
+      "frontend/postcss.config.mjs",
+      "frontend/components.json",
+      "frontend/openapi-ts.config.ts",
+      "frontend/eslint.config.mjs",
+      "frontend/.env.example",
+      "frontend/.npmrc",
+      "frontend/.gitignore",
+      "frontend/AGENTS.md",
+      "frontend/CLAUDE.md",
+      "frontend/pnpm-workspace.yaml"
+    ]
+  },
+  "auth": {
+    "backend": [
+      "backend/src/AuthModule",
+      "backend/src/SharedModule/Plugins/auth.plugin.ts",
+      "backend/src/SharedModule/Plugins/jwt.plugin.ts",
+      "backend/src/SharedModule/Plugins/cookie.plugin.ts"
+    ],
+    "note": "frontend/src/contexts/AuthContext.tsx and services/AuthService.ts ship in base regardless of this flag — Providers.tsx wraps AuthProvider unconditionally and dashboard layout/session guards depend on it structurally. This flag only controls whether the sign-in/sign-up UI and backend AuthModule are included.",
+    "frontend": [
+      "frontend/src/app/(auth)",
+      "frontend/src/sections/auth",
+      "frontend/src/app/dashboard/profile",
+      "frontend/src/sections/profile"
+    ]
+  },
+  "roles": {
+    "backend": ["backend/src/AuthModule/Middleware/AuthMiddleware.ts"]
+  },
+  "redux": {
+    "frontend": ["frontend/src/store"]
+  },
+  "exampleDomain": {
+    "note": "No sample CRUD reference module exists in this boilerplate yet — flag is a no-op placeholder until one is added.",
+    "backend": [],
+    "frontend": []
+  },
+  "scannerHaptic": {
+    "note": "Haptic hook/lib now ship in base (used generically by app-sidebar). No Zebra/DataWedge scanner component exists in this boilerplate yet — flag is a no-op placeholder until one is added.",
+    "backend": [],
+    "frontend": []
+  },
+  "database": {
+    "drizzle": {
+      "backend": ["backend/src/DatabaseModule", "backend/drizzle.config.ts"]
+    },
+    "prisma": {
+      "note": "Prisma DatabaseModule tree is copied from create-boilerplate/templates/prisma/ (see scaffold.ts copyPrismaDatabaseModule), not from backend/src directly.",
+      "backend": []
+    }
+  }
+}

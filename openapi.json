@@ -1,0 +1,361 @@
+{
+  "openapi": "3.1.0",
+  "info": {
+    "title": "The Weekend Stores API",
+    "description": "The Weekend Stores API.\n\n### Authentication\nAll `/api/*` routes require a valid session cookie set by Better Auth.\nPublic routes under `/api/public/*` do not require authentication.\n\n### SSE endpoints\nRoutes marked with `x-streaming: true` return a `text/event-stream` response.\nConnect via `EventSource` or `fetch` with a `ReadableStream` — not axios.\n\n### Observability (local dev)\nOpenTelemetry tracing is available in local development.\nSet `OTEL_ENABLED=true` in `backend/.env.dev` and start Jaeger:\n```\ndocker run -d --name jaeger -p 4318:4318 -p 16686:16686 jaegertracing/all-in-one\n```\n| Tool | URL | Purpose |\n|---|---|---|\n| Jaeger UI | http://localhost:16686 | View traces |\n| OTLP receiver | http://localhost:4318 | Collector endpoint |",
+    "version": "1.0.0"
+  },
+  "components": {
+    "securitySchemes": {
+      "cookieAuth": {
+        "type": "apiKey",
+        "in": "cookie",
+        "name": "better-auth.session_token",
+        "description": "Session cookie set automatically by Better Auth on sign-in."
+      }
+    },
+    "schemas": {}
+  },
+  "paths": {
+    "/api/public/auth/sign-in/email": {
+      "post": {
+        "summary": "Sign in",
+        "tags": ["Auth"],
+        "description": "Authenticates a user with email and password. On success, sets an HTTP-only session cookie.",
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "type": "object",
+                "required": ["email", "password"],
+                "properties": {
+                  "email": {
+                    "type": "string",
+                    "format": "email"
+                  },
+                  "password": {
+                    "type": "string",
+                    "minLength": 8
+                  }
+                }
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "description": "Default Response",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "properties": {
+                    "token": {
+                      "type": ["null", "string"]
+                    },
+                    "user": {
+                      "type": "object",
+                      "properties": {
+                        "id": {
+                          "type": "string",
+                          "format": "uuid"
+                        },
+                        "name": {
+                          "type": "string"
+                        },
+                        "email": {
+                          "type": "string",
+                          "format": "email"
+                        },
+                        "emailVerified": {
+                          "type": "boolean"
+                        },
+                        "image": {
+                          "type": ["null", "string"]
+                        },
+                        "createdAt": {
+                          "type": "string",
+                          "format": "date-time"
+                        },
+                        "updatedAt": {
+                          "type": "string",
+                          "format": "date-time"
+                        }
+                      }
+                    }
+                  }
+                }
+              }
+            }
+          },
+          "401": {
+            "description": "Default Response",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "properties": {
+                    "code": {
+                      "type": "string"
+                    },
+                    "message": {
+                      "type": "string"
+                    }
+                  }
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/api/public/auth/sign-out": {
+      "post": {
+        "summary": "Sign out",
+        "tags": ["Auth"],
+        "description": "Invalidates the current session and clears the session cookie.",
+        "responses": {
+          "200": {
+            "description": "Default Response",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "properties": {
+                    "success": {
+                      "type": "boolean"
+                    }
+                  }
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/api/public/auth/get-session": {
+      "get": {
+        "summary": "Get current session",
+        "tags": ["Auth"],
+        "description": "Returns the session and user associated with the current session cookie.",
+        "responses": {
+          "200": {
+            "description": "Default Response",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "properties": {
+                    "session": {
+                      "type": "object",
+                      "properties": {
+                        "id": {
+                          "type": "string"
+                        },
+                        "userId": {
+                          "type": "string",
+                          "format": "uuid"
+                        },
+                        "expiresAt": {
+                          "type": "string",
+                          "format": "date-time"
+                        },
+                        "ipAddress": {
+                          "type": ["null", "string"]
+                        },
+                        "userAgent": {
+                          "type": ["null", "string"]
+                        }
+                      },
+                      "nullable": true
+                    },
+                    "user": {
+                      "type": "object",
+                      "properties": {
+                        "id": {
+                          "type": "string",
+                          "format": "uuid"
+                        },
+                        "name": {
+                          "type": "string"
+                        },
+                        "email": {
+                          "type": "string",
+                          "format": "email"
+                        },
+                        "emailVerified": {
+                          "type": "boolean"
+                        },
+                        "image": {
+                          "type": ["null", "string"]
+                        },
+                        "createdAt": {
+                          "type": "string",
+                          "format": "date-time"
+                        },
+                        "updatedAt": {
+                          "type": "string",
+                          "format": "date-time"
+                        }
+                      },
+                      "nullable": true
+                    }
+                  }
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/api/me": {
+      "get": {
+        "summary": "Get current user profile",
+        "tags": ["Profile"],
+        "description": "Returns the authenticated user profile including their assigned role.",
+        "responses": {
+          "200": {
+            "description": "Default Response",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "properties": {
+                    "status": {
+                      "type": "string"
+                    },
+                    "data": {
+                      "type": "object",
+                      "required": ["id", "name", "email", "emailVerified"],
+                      "properties": {
+                        "id": {
+                          "type": "string"
+                        },
+                        "name": {
+                          "type": "string"
+                        },
+                        "email": {
+                          "type": "string",
+                          "format": "email"
+                        },
+                        "emailVerified": {
+                          "type": "boolean"
+                        },
+                        "image": {
+                          "type": "string",
+                          "nullable": true
+                        },
+                        "roleKey": {
+                          "type": "string",
+                          "nullable": true
+                        }
+                      }
+                    }
+                  }
+                }
+              }
+            }
+          },
+          "401": {
+            "description": "Default Response",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "properties": {
+                    "status": {
+                      "type": "string"
+                    },
+                    "message": {
+                      "type": "string"
+                    },
+                    "code": {
+                      "type": "number"
+                    }
+                  }
+                }
+              }
+            }
+          },
+          "403": {
+            "description": "Default Response",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "properties": {
+                    "status": {
+                      "type": "string"
+                    },
+                    "message": {
+                      "type": "string"
+                    },
+                    "code": {
+                      "type": "number"
+                    }
+                  }
+                }
+              }
+            }
+          }
+        }
+      }
+    }
+  },
+  "security": [
+    {
+      "cookieAuth": []
+    }
+  ],
+  "tags": [
+    {
+      "name": "Debug",
+      "description": "Device log ingestion from Android WebView — for remote debugging when device is off-site"
+    },
+    {
+      "name": "Health",
+      "description": "Server health check"
+    },
+    {
+      "name": "Auth",
+      "description": "Better Auth — email/password sign-in, sign-up, sign-out"
+    },
+    {
+      "name": "Profile",
+      "description": "Authenticated user profile — read-only view including role"
+    },
+    {
+      "name": "SAP Auth",
+      "description": "SAP OData session auth — validates SAP user/password via CSRF token fetch and issues an app session cookie."
+    },
+    {
+      "name": "Items",
+      "description": "Item CRUD operations"
+    },
+    {
+      "name": "Purchase Orders",
+      "description": "SAP Purchase Order data — header and line items fetched live from API_PURCHASEORDER_PROCESS_SRV."
+    },
+    {
+      "name": "Products",
+      "description": "SAP Product master data — fetched live from API_PRODUCT_SRV."
+    },
+    {
+      "name": "Material Stock",
+      "description": "SAP Material Stock quantities — fetched live from API_MATERIAL_STOCK_SRV."
+    },
+    {
+      "name": "Goods Issue",
+      "description": "Goods Issue to Cost Center — cost center, material, and stock validation plus posting via API_COSTCENTER_SRV, API_PRODUCT_SRV, API_MATERIAL_STOCK_SRV, and API_MATERIAL_DOCUMENT_SRV (movement type 201)."
+    },
+    {
+      "name": "Physical Inventory",
+      "description": "Physical Inventory — document headers, items, and serial numbers from API_PHYSICAL_INVENTORY_DOC_SRV."
+    },
+    {
+      "name": "Production Orders",
+      "description": "SAP Production Order data and GR/GI posting — fetched from API_PRODUCTION_ORDER_2_SRV; goods receipt/issue posted via API_MATERIAL_DOCUMENT_SRV (movement types 101 and 261)."
+    }
+  ]
+}

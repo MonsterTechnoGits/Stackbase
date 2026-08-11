@@ -1,0 +1,164 @@
+# ─────────────────────────────────────────────
+#  Dependencies
+# ─────────────────────────────────────────────
+node_modules/
+.pnp
+.pnp.js
+.yarn/
+
+# ─────────────────────────────────────────────
+#  Build outputs
+# ─────────────────────────────────────────────
+dist/
+build/
+out/
+/deploy/
+
+# Next.js
+.next/
+next-env.d.ts
+
+# Bun
+.bun/
+bun.lockb
+
+# ─────────────────────────────────────────────
+#  Logs
+# ─────────────────────────────────────────────
+logs/
+*.log
+npm-debug.log*
+yarn-debug.log*
+yarn-error.log*
+pnpm-debug.log*
+lerna-debug.log*
+
+# ─────────────────────────────────────────────
+#  Environment files
+# ─────────────────────────────────────────────
+.env
+.env.dev
+.env.local
+.env.production
+.env.staging
+.env.test
+.env.*.local
+
+# Keep example/template env files
+!.env.example
+!.env.dev.example
+
+# ── CI secrets — never commit filled secret files ────────────────────────────
+ci/env/secrets.production
+ci/env/secrets.quality
+ci/env/secrets.development
+
+# ci/env/*.base and ci/env/secrets.template are safe to commit
+
+# ─────────────────────────────────────────────
+#  TypeScript
+# ─────────────────────────────────────────────
+*.tsbuildinfo
+tsconfig.tsbuildinfo
+
+# ─────────────────────────────────────────────
+#  Testing & Coverage
+# ─────────────────────────────────────────────
+coverage/
+.nyc_output/
+*.lcov
+test-results/
+playwright-report/
+.playwright/
+
+# ─────────────────────────────────────────────
+#  Database
+# ─────────────────────────────────────────────
+# Drizzle generated migrations (keep generated SQL migrations, ignore meta snapshots)
+# backend/drizzle/meta/
+
+# ─────────────────────────────────────────────
+#  Docker volumes / data
+# ─────────────────────────────────────────────
+postgres_data/
+redis_data/
+docker-volumes/
+
+# ─────────────────────────────────────────────
+#  OS
+# ─────────────────────────────────────────────
+# macOS
+.DS_Store
+.DS_Store?
+._*
+.Spotlight-V8
+.Trashes
+ehthumbs.db
+
+# Windows
+Thumbs.db
+Thumbs.db:encryptable
+ehthumbs.db
+Desktop.ini
+$RECYCLE.BIN/
+
+# Linux
+*~
+
+# ─────────────────────────────────────────────
+#  Editors & IDEs
+# ─────────────────────────────────────────────
+# VS Code (keep shared settings if desired — remove the "!" lines to ignore entirely)
+.vscode/*
+!.vscode/extensions.json
+!.vscode/settings.json
+!.vscode/tasks.json
+
+# JetBrains (IntelliJ, WebStorm, etc.)
+.idea/
+*.iml
+*.iws
+*.ipr
+
+# Vim / Neovim
+*.swp
+*.swo
+*.swn
+Session.vim
+.netrwhist
+
+# Emacs
+*~
+\#*\#
+.#*
+
+# ─────────────────────────────────────────────
+#  Package managers (lock files are committed)
+# ─────────────────────────────────────────────
+# NOTE: pnpm-lock.yaml is intentionally NOT listed here — commit the lockfile
+
+# ─────────────────────────────────────────────
+#  Deployment / Cloud
+# ─────────────────────────────────────────────
+.coolify/secrets
+.vercel/
+.netlify/
+
+# ─────────────────────────────────────────────
+#  Misc
+# ─────────────────────────────────────────────
+*.pem
+*.key
+*.cert
+*.crt
+backend/certs/
+.cache/
+.parcel-cache/
+.turbo/
+.swc/
+storybook-static/
+.chromatic/
+.playwright-mcp
+secrets.production
+# SAP session files
+backend/sap-sessions/
